@@ -1,0 +1,2468 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Backbase Journey & API Reference Documentation</title><style>:root{--bg:#f6f8fb;--card:#ffffff;--text:#1f2937;--muted:#6b7280;--line:#e5e7eb;--blue:#123c69;--gold:#d9a441;--green:#087f5b;}*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6} header{background:linear-gradient(135deg,var(--blue),#0b2340);color:#fff;padding:34px 42px;border-bottom:6px solid var(--gold)} header h1{margin:0;font-size:30px} header p{margin:8px 0 0;color:#dbeafe} .layout{display:grid;grid-template-columns:300px 1fr;gap:24px;max-width:1550px;margin:0 auto;padding:24px}.nav{position:sticky;top:18px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;max-height:calc(100vh - 36px);overflow:auto}.nav h3{margin:0 0 10px;color:var(--blue)}.nav a{display:block;color:#374151;text-decoration:none;padding:8px 6px;border-radius:8px;font-size:14px}.nav a:hover{background:#eef2ff}.doc-section{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:22px;padding:28px;box-shadow:0 8px 24px rgba(15,23,42,.05)}h1,h2,h3{color:var(--blue);line-height:1.25}h1{font-size:28px;border-bottom:2px solid var(--gold);padding-bottom:10px}h2{font-size:22px;margin-top:28px}h3{font-size:18px;margin-top:22px}table{width:100%;border-collapse:collapse;margin:14px 0 22px;font-size:14px}th{background:#edf2f7;color:#111827;text-align:left}th,td{border:1px solid var(--line);padding:10px;vertical-align:top}code{background:#eef2ff;padding:2px 5px;border-radius:5px}pre{background:#0f172a;color:#e5e7eb;border-radius:12px;padding:16px;overflow:auto}pre code{background:transparent;color:inherit;padding:0}blockquote{border-left:4px solid var(--gold);background:#fffbeb;padding:12px 14px;margin:14px 0;color:#4b5563}.badge{display:inline-block;background:#fff7ed;color:#9a3412;border:1px solid #fed7aa;border-radius:999px;padding:4px 10px;font-size:12px;margin-top:8px}@media(max-width:900px){.layout{grid-template-columns:1fr}.nav{position:static;max-height:none}}</style></head>
+<body><header><h1>Backbase Journeys, API Sequences & Dependencies</h1><p>Credit Union Digital Banking Integration • Backbase EBP ⇄ Symitar Core</p><span class="badge">Updated Consolidated Reference Pack</span></header><div class="layout"><aside class="nav"><h3>Contents</h3><a href="#backbase-journeys-api-sequences-and-dependencies">Backbase Journeys, API Sequences, and Dependencies</a><a href="#table-of-contents" style="padding-left:18px;font-size:13px">Table of Contents</a><a href="#assumptions" style="padding-left:18px;font-size:13px">Assumptions</a><a href="#document-set" style="padding-left:18px;font-size:13px">Document Set</a><a href="#standard-journey-documentation-format" style="padding-left:18px;font-size:13px">Standard Journey Documentation Format</a><a href="#iam-authentication-secure-login-journey">01 - IAM Authentication &amp; Secure Login Journey</a><a href="#error-handling" style="padding-left:18px;font-size:13px">8. Error Handling</a><a href="#open-confirmation-items" style="padding-left:18px;font-size:13px">10. Open Confirmation Items</a><a href="#user-context-session-journey">02 - User Context &amp; Session Journey</a><a href="#dependency-mapping" style="padding-left:18px;font-size:13px">5. Dependency Mapping</a><a href="#open-items" style="padding-left:18px;font-size:13px">7. Open Items</a><a href="#member-onboarding-party-account-creation-journey">03 - Member Onboarding, Party &amp; Account Creation Journey</a><a href="#account-summary-account-list-journey">04 - Account Summary / Account List Journey</a><a href="#transaction-history-journey">05 - Transaction History Journey</a><a href="#logout-session-termination-journey">06 - Logout &amp; Session Termination Journey</a><a href="#api-catalogue-dependency-mapping">API Catalogue &amp; Dependency Mapping</a><a href="#symitar-mapping-summary" style="padding-left:18px;font-size:13px">7. Symitar Mapping Summary</a><a href="#endpoint-confirmation-required" style="padding-left:18px;font-size:13px">8. Endpoint Confirmation Required</a><a href="#error-handling-reference">Error Handling Reference</a><a href="#common-api-error-handling" style="padding-left:18px;font-size:13px">1. Common API Error Handling</a><a href="#login-specific-errors" style="padding-left:18px;font-size:13px">2. Login-Specific Errors</a><a href="#accounttransaction-errors" style="padding-left:18px;font-size:13px">3. Account/Transaction Errors</a><a href="#standard-error-object---placeholder" style="padding-left:18px;font-size:13px">4. Standard Error Object - Placeholder</a><a href="#implementation-notes" style="padding-left:18px;font-size:13px">5. Implementation Notes</a><a href="#token-session-management-reference">Token &amp; Session Management Reference</a><a href="#token-lifecycle" style="padding-left:18px;font-size:13px">1. Token Lifecycle</a><a href="#mobile-implementation-notes" style="padding-left:18px;font-size:13px">6. Mobile Implementation Notes</a><a href="#open-items-confirmation-required">Open Items / Confirmation Required</a><a href="#implementation-readiness-addendum">Implementation Readiness Addendum</a></aside><main><section class="doc-section" data-file="README.md">
+<h1 id="backbase-journeys-api-sequences-and-dependencies">Backbase
+Journeys, API Sequences, and Dependencies</h1>
+<p><strong>Consolidated Reference — Credit Union Digital Banking
+Integration</strong></p>
+<p><strong>Scope:</strong> Backbase IAM Authentication, Secure Login,
+session/token handling, user context, member onboarding, account
+dashboard, transaction history, internal transfers, ACH/payment
+initiation, Backbase Stream onboarding, Symitar mapping, and logout
+journey documentation.</p>
+<p><strong>Purpose:</strong> This documentation converts the guide-style
+document into developer-friendly Markdown/HTML reference material. It
+explains journey-wise flow, API sequence, API dependencies, input/output
+references, error handling, and implementation notes.</p>
+<blockquote>
+<p><strong>Status Note:</strong> This is complete as a journey,
+sequence, dependency, security, and error-handling reference for
+internal review and walkthrough. It should not be treated as the final
+implementation baseline until all environment-specific endpoints,
+payload schemas, auth-prefix/realm values, and Symitar connector
+mappings are confirmed from the live Backbase OpenAPI/API reference for
+the target environment. Items marked as illustrative or confirmation
+required must be validated before development sign-off.</p>
+</blockquote>
+<blockquote>
+<p><strong>Source Note:</strong> The structure and patterns are based on
+Backbase module/API reference material, public Backbase sample
+repositories, and project-level analysis. Verified patterns and
+illustrative items are intentionally separated so the team can replace
+placeholders with exact target-environment values.</p>
+</blockquote>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li>Overview and Document Status</li>
+<li>Document Set</li>
+<li>Assumptions</li>
+<li>Journey Documentation Format</li>
+<li>IAM Authentication and Secure Login</li>
+<li>User Context and Session</li>
+<li>Member Onboarding / Party / Account</li>
+<li>Account Summary / Account Dashboard</li>
+<li>Transaction History</li>
+<li>Logout and Session Termination</li>
+<li>API Catalogue and Dependency Mapping</li>
+<li>Symitar Mapping Summary</li>
+<li>Error Handling Reference</li>
+<li>Token and Session Management</li>
+<li>Mobile Implementation Notes</li>
+<li>Open Items for Confirmation</li>
+</ol>
+<h2 id="assumptions">Assumptions</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Assumption</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Backbase IAM / Keycloak is the identity provider for secured
+journeys.</td>
+<td>All protected DBS calls require a valid access token.</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Symitar remains the system of record for member, account, balance,
+transaction, and payment execution data.</td>
+<td>Backbase stores/serves digital banking views, while core data
+accuracy depends on Symitar integration.</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Backbase Stream is used to ingest Symitar data into DBS
+services.</td>
+<td>Account and transaction visibility depends on Stream ingestion and
+cursor freshness.</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Access Control is used for server-side entitlement enforcement.</td>
+<td>UI-level hiding is not sufficient; APIs must enforce
+permissions.</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Payment Order Service handles payment initiation lifecycle, while
+Symitar executes the actual core transaction.</td>
+<td>A payment accepted by Backbase does not always mean the core
+transaction is posted.</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Exact endpoint paths may vary by API gateway, realm, deployment, and
+environment configuration.</td>
+<td>Final implementation must validate all URLs from the live
+OpenAPI/API reference.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="document-set">Document Set</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>index.html</code></td>
+<td>Browser-friendly complete documentation</td>
+</tr>
+<tr class="even">
+<td><code>journeys/01-iam-authentication-secure-login.md</code></td>
+<td>Login and authentication journey</td>
+</tr>
+<tr class="odd">
+<td><code>journeys/02-user-context-session.md</code></td>
+<td>User profile/session context after login</td>
+</tr>
+<tr class="even">
+<td><code>journeys/03-member-onboarding-party-account.md</code></td>
+<td>Member signup / Party / Account creation journey</td>
+</tr>
+<tr class="odd">
+<td><code>journeys/04-account-summary.md</code></td>
+<td>Account listing / account summary journey</td>
+</tr>
+<tr class="even">
+<td><code>journeys/05-transaction-history.md</code></td>
+<td>Transaction list / transaction detail journey</td>
+</tr>
+<tr class="odd">
+<td><code>journeys/06-logout-session-termination.md</code></td>
+<td>Logout and session termination journey</td>
+</tr>
+<tr class="even">
+<td><code>reference/api-catalog.md</code></td>
+<td>API catalogue and dependencies</td>
+</tr>
+<tr class="odd">
+<td><code>reference/error-handling.md</code></td>
+<td>Error cases and UI behaviour</td>
+</tr>
+<tr class="even">
+<td><code>reference/token-session-management.md</code></td>
+<td>Token, refresh, secure storage notes</td>
+</tr>
+<tr class="odd">
+<td><code>reference/open-items.md</code></td>
+<td>Items requiring confirmation from API reference/team</td>
+</tr>
+<tr class="even">
+<td><code>reference/implementation-readiness-addendum.md</code></td>
+<td>Final readiness notes and pending sign-off items</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-to-use">How to Use</h2>
+<ol type="1">
+<li>Open <code>index.html</code> in a browser for a single-page
+reference.</li>
+<li>Use Markdown files in GitHub, Confluence, or project
+documentation.</li>
+<li>Replace placeholder endpoints with exact Backbase API reference
+values.</li>
+<li>Validate request/response payloads with the shared Backbase API
+HTML.</li>
+<li>Keep each journey updated as implementation progresses.</li>
+</ol>
+<h2 id="standard-journey-documentation-format">Standard Journey
+Documentation Format</h2>
+<p>Each journey contains:</p>
+<ul>
+<li>Business purpose</li>
+<li>Actors and systems involved</li>
+<li>Preconditions</li>
+<li>Step-by-step sequence</li>
+<li>API dependency table</li>
+<li>Request/response reference</li>
+<li>Error scenarios</li>
+<li>Implementation notes</li>
+<li>Open confirmation items</li>
+</ul>
+
+</section><section class="doc-section" data-file="journeys/01-iam-authentication-secure-login.md">
+<h1 id="iam-authentication-secure-login-journey">01 - IAM Authentication
+&amp; Secure Login Journey</h1>
+<h2 id="objective">1. Objective</h2>
+<p>This journey explains how a user securely signs in to the mobile/web
+application using Backbase IAM. The output of this journey is a valid
+authenticated session/token that can be used to access protected
+Backbase APIs.</p>
+<h2 id="actors-systems">2. Actors / Systems</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Actor/System</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>User</td>
+<td>Enters credentials and initiates login</td>
+</tr>
+<tr class="even">
+<td>Mobile/Web App</td>
+<td>Captures credentials and calls authentication APIs</td>
+</tr>
+<tr class="odd">
+<td>Backbase IAM</td>
+<td>Validates identity and issues tokens/session</td>
+</tr>
+<tr class="even">
+<td>API Gateway / Edge Services</td>
+<td>Validates token for downstream API calls</td>
+</tr>
+<tr class="odd">
+<td>Downstream Backbase Services</td>
+<td>Account, party, transaction, entitlement, and profile APIs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="preconditions">3. Preconditions</h2>
+<ul>
+<li>User is already registered in the identity system.</li>
+<li>User account is active and not locked/suspended.</li>
+<li>App has valid client configuration.</li>
+<li>IAM base URL/environment is configured.</li>
+<li>TLS/HTTPS is enabled.</li>
+</ul>
+<h2 id="high-level-flow">4. High-Level Flow</h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant U as User
+    participant APP as Mobile/Web App
+    participant IAM as Backbase IAM
+    participant API as Backbase APIs
+
+    U-&gt;&gt;APP: Open Login Screen
+    U-&gt;&gt;APP: Enter username/password
+    APP-&gt;&gt;IAM: Submit credentials
+    IAM--&gt;&gt;APP: Return access token / refresh token / session
+    APP-&gt;&gt;APP: Store token securely
+    APP-&gt;&gt;API: Call protected API with Bearer token
+    API--&gt;&gt;APP: Return protected data
+    APP--&gt;&gt;U: Show dashboard/home</code></pre>
+<h2 id="step-by-step-sequence">5. Step-by-Step Sequence</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Screen/Action</th>
+<th>API/Service</th>
+<th>Input</th>
+<th>Output</th>
+<th>Dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>User opens app</td>
+<td>N/A</td>
+<td>App launch</td>
+<td>Login screen</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>User enters credentials</td>
+<td>N/A</td>
+<td>Username, password</td>
+<td>Validated form data</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>User taps Sign In</td>
+<td>IAM Authentication API</td>
+<td>Username, password, client details</td>
+<td>Auth request submitted</td>
+<td>Valid form fields</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>IAM validates credentials</td>
+<td>Backbase IAM</td>
+<td>Credentials</td>
+<td>Success/failure</td>
+<td>User must exist and be active</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Token/session is issued</td>
+<td>Token endpoint/Auth response</td>
+<td>Successful authentication</td>
+<td>Access token, refresh token, expiry</td>
+<td>Step 4 success</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>App stores token</td>
+<td>Secure storage</td>
+<td>Token data</td>
+<td>Token available for API calls</td>
+<td>Step 5 success</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>App fetches user context</td>
+<td>User/Profile/Session API</td>
+<td>Access token</td>
+<td>User/party/session context</td>
+<td>Step 5 token</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>App navigates to dashboard</td>
+<td>N/A</td>
+<td>Valid session</td>
+<td>Home/dashboard</td>
+<td>Step 7 success or optional</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-details">6. API Details</h2>
+<h3 id="authentication-login-api">6.1 Authentication / Login API</h3>
+<p><strong>Purpose:</strong> Authenticate user credentials and start
+secure session.</p>
+<p><strong>Method:</strong> <code>POST</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from Backbase IAM API reference</code><br />
+<strong>Example placeholder:</strong> <code>/auth/login</code> or
+<code>/oauth/token</code></p>
+<h4 id="request-headers">Request Headers</h4>
+<pre class="http"><code>Content-Type: application/json
+Accept: application/json</code></pre>
+<h4 id="request-body---placeholder">Request Body - Placeholder</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;user@example.com&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;password&quot;</span><span class="fu">:</span> <span class="st">&quot;********&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;client_id&quot;</span><span class="fu">:</span> <span class="st">&quot;mobile-app-client&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;grant_type&quot;</span><span class="fu">:</span> <span class="st">&quot;password&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="success-response---placeholder">Success Response -
+Placeholder</h4>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;access_token&quot;</span><span class="fu">:</span> <span class="st">&quot;eyJhbGciOi...&quot;</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;refresh_token&quot;</span><span class="fu">:</span> <span class="st">&quot;eyJhbGciOi...&quot;</span><span class="fu">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;token_type&quot;</span><span class="fu">:</span> <span class="st">&quot;Bearer&quot;</span><span class="fu">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;expires_in&quot;</span><span class="fu">:</span> <span class="dv">3600</span><span class="fu">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;scope&quot;</span><span class="fu">:</span> <span class="st">&quot;openid profile accounts transactions&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="dependencies">Dependencies</h4>
+<ul>
+<li>No previous API dependency.</li>
+<li>Requires valid user credentials.</li>
+<li>Requires valid client/environment configuration.</li>
+</ul>
+<h4 id="output-used-by">Output Used By</h4>
+<ul>
+<li>User context/profile API</li>
+<li>Account list API</li>
+<li>Transaction API</li>
+<li>Any secured Backbase domain API</li>
+</ul>
+<h2 id="validation-rules">7. Validation Rules</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Username</td>
+<td>Mandatory; format as configured by IAM, usually email/user ID</td>
+</tr>
+<tr class="even">
+<td>Password</td>
+<td>Mandatory; do not log or persist as plain text</td>
+</tr>
+<tr class="odd">
+<td>Client ID</td>
+<td>Must match configured application client</td>
+</tr>
+<tr class="even">
+<td>Environment URL</td>
+<td>Must be aligned with target Backbase environment</td>
+</tr>
+</tbody>
+</table>
+<h2 id="error-handling">8. Error Handling</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Expected Status</th>
+<th>UI Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Invalid credentials</td>
+<td>400/401</td>
+<td>Show invalid username/password message</td>
+</tr>
+<tr class="even">
+<td>Account locked</td>
+<td>423/403</td>
+<td>Show account locked message and support path</td>
+</tr>
+<tr class="odd">
+<td>Password expired</td>
+<td>403</td>
+<td>Redirect to password reset/change flow if supported</td>
+</tr>
+<tr class="even">
+<td>MFA required</td>
+<td>202/401 with challenge</td>
+<td>Navigate to MFA/OTP screen</td>
+</tr>
+<tr class="odd">
+<td>Network timeout</td>
+<td>408/timeout</td>
+<td>Show retry option</td>
+</tr>
+<tr class="even">
+<td>Server error</td>
+<td>500/503</td>
+<td>Show generic service unavailable message</td>
+</tr>
+</tbody>
+</table>
+<h2 id="security-notes">9. Security Notes</h2>
+<ul>
+<li>Never log username/password or tokens.</li>
+<li>Store token only in platform-secure storage.</li>
+<li>Use HTTPS only.</li>
+<li>Clear token on logout, token expiry failure, or unauthorized
+response.</li>
+<li>Use refresh-token flow only if supported and approved.</li>
+</ul>
+<h2 id="open-confirmation-items">10. Open Confirmation Items</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Item</th>
+<th>Owner</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Exact IAM login endpoint</td>
+<td>Backbase/API owner</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>Exact request body schema</td>
+<td>Backbase/API owner</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>MFA/OTP requirement</td>
+<td>Product/API owner</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>Token expiry and refresh behaviour</td>
+<td>Backbase/IAM owner</td>
+<td>Open</td>
+</tr>
+</tbody>
+</table>
+
+</section><section class="doc-section" data-file="journeys/02-user-context-session.md">
+<h1 id="user-context-session-journey">02 - User Context &amp; Session
+Journey</h1>
+<h2 id="objective">1. Objective</h2>
+<p>After successful login, the application must identify the
+authenticated user, user roles/entitlements, party/customer reference,
+and any session-level information needed for subsequent journeys.</p>
+<h2 id="high-level-flow">2. High-Level Flow</h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant APP as Mobile/Web App
+    participant API as User/Profile API
+    participant ENT as Entitlements Service
+
+    APP-&gt;&gt;API: Get logged-in user context with Bearer token
+    API--&gt;&gt;APP: Return userId, partyId/customerId, roles
+    APP-&gt;&gt;ENT: Optional - fetch entitlements/permissions
+    ENT--&gt;&gt;APP: Return allowed features/actions
+    APP-&gt;&gt;APP: Store user context in memory/session state</code></pre>
+<h2 id="step-by-step-sequence">3. Step-by-Step Sequence</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Action</th>
+<th>API</th>
+<th>Input</th>
+<th>Output</th>
+<th>Dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Login completed</td>
+<td>N/A</td>
+<td>Access token</td>
+<td>Authenticated session</td>
+<td>Login journey</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Fetch user profile/context</td>
+<td>User/Profile API</td>
+<td>Access token</td>
+<td>User ID, party ID/customer ID, username</td>
+<td>Valid access token</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Fetch roles/entitlements</td>
+<td>Entitlements API</td>
+<td>Access token, user ID</td>
+<td>Permissions/allowed features</td>
+<td>User context</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Store context</td>
+<td>App state</td>
+<td>User context</td>
+<td>Available for journeys</td>
+<td>Step 2/3</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Route user</td>
+<td>App navigation</td>
+<td>Role/permissions</td>
+<td>Dashboard/home</td>
+<td>Context resolved</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-details">4. API Details</h2>
+<h3 id="user-profile-context-api">4.1 User Profile / Context API</h3>
+<p><strong>Method:</strong> <code>GET</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from API reference</code><br />
+<strong>Example placeholder:</strong> <code>/users/me</code> or
+<code>/user/profile</code></p>
+<h4 id="headers">Headers</h4>
+<pre class="http"><code>Authorization: Bearer &lt;access_token&gt;
+Accept: application/json</code></pre>
+<h4 id="success-response---placeholder">Success Response -
+Placeholder</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;userId&quot;</span><span class="fu">:</span> <span class="st">&quot;user-123&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;username&quot;</span><span class="fu">:</span> <span class="st">&quot;user@example.com&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;fullName&quot;</span><span class="fu">:</span> <span class="st">&quot;John Doe&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;partyId&quot;</span><span class="fu">:</span> <span class="st">&quot;party-456&quot;</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;customerId&quot;</span><span class="fu">:</span> <span class="st">&quot;customer-789&quot;</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;roles&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;RetailUser&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;ACTIVE&quot;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="entitlements-permissions-api">4.2 Entitlements / Permissions
+API</h3>
+<p><strong>Method:</strong> <code>GET</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from API reference</code></p>
+<h4 id="dependencies">Dependencies</h4>
+<ul>
+<li>Requires access token.</li>
+<li>May require user ID or party/customer ID from User Profile API.</li>
+</ul>
+<h2 id="dependency-mapping">5. Dependency Mapping</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Data</th>
+<th>Source</th>
+<th>Used By</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>access_token</code></td>
+<td>Login API</td>
+<td>All secured APIs</td>
+</tr>
+<tr class="even">
+<td><code>userId</code></td>
+<td>User Profile API</td>
+<td>Entitlements, audit, user preferences</td>
+</tr>
+<tr class="odd">
+<td><code>partyId/customerId</code></td>
+<td>User Profile/Party API</td>
+<td>Accounts, onboarding, customer profile</td>
+</tr>
+<tr class="even">
+<td><code>roles/permissions</code></td>
+<td>Entitlements API</td>
+<td>Menu visibility, feature access</td>
+</tr>
+</tbody>
+</table>
+<h2 id="error-handling">6. Error Handling</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>UI/API Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>401 Unauthorized</td>
+<td>Clear session and redirect to login</td>
+</tr>
+<tr class="even">
+<td>User context missing</td>
+<td>Show generic login/session error</td>
+</tr>
+<tr class="odd">
+<td>Entitlements unavailable</td>
+<td>Hide restricted actions or show fallback</td>
+</tr>
+<tr class="even">
+<td>Party ID missing</td>
+<td>Do not call account APIs until resolved</td>
+</tr>
+</tbody>
+</table>
+<h2 id="open-items">7. Open Items</h2>
+<ul>
+<li>Confirm exact source of <code>partyId</code>,
+<code>customerId</code>, or membership ID.</li>
+<li>Confirm whether entitlements are mandatory before dashboard
+load.</li>
+<li>Confirm role names and permission model.</li>
+</ul>
+
+</section><section class="doc-section" data-file="journeys/03-member-onboarding-party-account.md">
+<h1 id="member-onboarding-party-account-creation-journey">03 - Member
+Onboarding, Party &amp; Account Creation Journey</h1>
+<h2 id="objective">1. Objective</h2>
+<p>This journey documents a typical member onboarding flow where the
+user/member is created or identified, party reference data is managed,
+membership/customer reference is generated, and the first/current
+account is created or linked.</p>
+<h2 id="important-backbase-domains">2. Important Backbase Domains</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Domain/Service</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Party Lifecycle</td>
+<td>Create/update/manage party/person/customer lifecycle</td>
+</tr>
+<tr class="even">
+<td>Party Reference Data Directory</td>
+<td>Reference data required during onboarding</td>
+</tr>
+<tr class="odd">
+<td>Current Account / Arrangement</td>
+<td>Create/link account or account arrangement</td>
+</tr>
+<tr class="even">
+<td>IAM</td>
+<td>User authentication and identity</td>
+</tr>
+<tr class="odd">
+<td>Entitlements</td>
+<td>Assign allowed access after onboarding</td>
+</tr>
+</tbody>
+</table>
+<h2 id="high-level-flow">3. High-Level Flow</h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant U as User
+    participant APP as App
+    participant IAM as IAM
+    participant PARTY as Party Lifecycle API
+    participant REF as Party Reference Data API
+    participant ACC as Current Account/Arrangement API
+
+    U-&gt;&gt;APP: Start registration/onboarding
+    APP-&gt;&gt;REF: Fetch reference data
+    REF--&gt;&gt;APP: Return countries, IDs, occupation, etc.
+    APP-&gt;&gt;PARTY: Submit party/customer details
+    PARTY--&gt;&gt;APP: Return partyId/customerId/memberId
+    APP-&gt;&gt;ACC: Create/link first account
+    ACC--&gt;&gt;APP: Return accountId/arrangementId
+    APP-&gt;&gt;IAM: Create/link digital identity if required
+    IAM--&gt;&gt;APP: Identity created/linked
+    APP--&gt;&gt;U: Onboarding complete</code></pre>
+<h2 id="step-by-step-sequence">4. Step-by-Step Sequence</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Action</th>
+<th>API/Domain</th>
+<th>Input</th>
+<th>Output</th>
+<th>Dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Start onboarding</td>
+<td>N/A</td>
+<td>User starts flow</td>
+<td>Registration form</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Load reference data</td>
+<td>Party Reference Data API</td>
+<td>Access token/public config</td>
+<td>Countries, ID types, etc.</td>
+<td>Environment config</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Capture personal details</td>
+<td>N/A</td>
+<td>Name, DOB, contact, address</td>
+<td>Validated form</td>
+<td>Reference data</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Submit party details</td>
+<td>Party Lifecycle API</td>
+<td>Personal/KYC data</td>
+<td><code>partyId/customerId/memberId</code></td>
+<td>Valid form data</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Create/link account</td>
+<td>Current Account/Arrangement API</td>
+<td>Party/customer ID</td>
+<td><code>accountId/arrangementId</code></td>
+<td>Step 4 output</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Create/link identity</td>
+<td>IAM/User API</td>
+<td>User contact + party/customer ID</td>
+<td>Digital user identity</td>
+<td>Step 4 output</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Assign entitlements</td>
+<td>Entitlements API</td>
+<td>User ID, role, arrangement</td>
+<td>Permissions</td>
+<td>Identity/account created</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Complete onboarding</td>
+<td>N/A</td>
+<td>All required IDs</td>
+<td>Success screen/login</td>
+<td>Previous steps success</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-details">5. API Details</h2>
+<h3 id="party-reference-data-api">5.1 Party Reference Data API</h3>
+<p><strong>Purpose:</strong> Provides reference/master data used in
+onboarding forms.</p>
+<p><strong>Method:</strong> <code>GET</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from API reference</code></p>
+<p><strong>Example Response - Placeholder</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;countries&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;US&quot;</span><span class="ot">,</span> <span class="st">&quot;IN&quot;</span><span class="ot">,</span> <span class="st">&quot;UK&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;idTypes&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;PASSPORT&quot;</span><span class="ot">,</span> <span class="st">&quot;DRIVING_LICENSE&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;employmentStatuses&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;EMPLOYED&quot;</span><span class="ot">,</span> <span class="st">&quot;SELF_EMPLOYED&quot;</span><span class="ot">,</span> <span class="st">&quot;RETIRED&quot;</span><span class="ot">]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="party-lifecycle-api">5.2 Party Lifecycle API</h3>
+<p><strong>Purpose:</strong> Creates or updates customer/party
+record.</p>
+<p><strong>Method:</strong> <code>POST</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from API reference</code></p>
+<p><strong>Request Body - Placeholder</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;firstName&quot;</span><span class="fu">:</span> <span class="st">&quot;John&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;lastName&quot;</span><span class="fu">:</span> <span class="st">&quot;Doe&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;dateOfBirth&quot;</span><span class="fu">:</span> <span class="st">&quot;1990-01-01&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;email&quot;</span><span class="fu">:</span> <span class="st">&quot;john.doe@example.com&quot;</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;mobileNumber&quot;</span><span class="fu">:</span> <span class="st">&quot;+10000000000&quot;</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;address&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;line1&quot;</span><span class="fu">:</span> <span class="st">&quot;Address line 1&quot;</span><span class="fu">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;city&quot;</span><span class="fu">:</span> <span class="st">&quot;City&quot;</span><span class="fu">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;country&quot;</span><span class="fu">:</span> <span class="st">&quot;US&quot;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p><strong>Success Response - Placeholder</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;partyId&quot;</span><span class="fu">:</span> <span class="st">&quot;party-456&quot;</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;customerId&quot;</span><span class="fu">:</span> <span class="st">&quot;customer-789&quot;</span><span class="fu">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;membershipId&quot;</span><span class="fu">:</span> <span class="st">&quot;member-001&quot;</span><span class="fu">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;CREATED&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="current-account-arrangement-api">5.3 Current Account /
+Arrangement API</h3>
+<p><strong>Purpose:</strong> Creates or links the first/current account
+for the party/customer.</p>
+<p><strong>Method:</strong> <code>POST</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from API reference</code></p>
+<p><strong>Dependency:</strong> Requires <code>partyId</code> or
+<code>customerId</code> from Party Lifecycle API.</p>
+<p><strong>Success Response - Placeholder</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;accountId&quot;</span><span class="fu">:</span> <span class="st">&quot;acc-001&quot;</span><span class="fu">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;arrangementId&quot;</span><span class="fu">:</span> <span class="st">&quot;arr-001&quot;</span><span class="fu">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;accountNumberMasked&quot;</span><span class="fu">:</span> <span class="st">&quot;****1234&quot;</span><span class="fu">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;ACTIVE&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h2 id="dependency-mapping">6. Dependency Mapping</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Output</th>
+<th>Generated By</th>
+<th>Required For</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Reference data</td>
+<td>Party Reference Data API</td>
+<td>Form dropdowns/validation</td>
+</tr>
+<tr class="even">
+<td><code>partyId</code></td>
+<td>Party Lifecycle API</td>
+<td>Account creation/linking</td>
+</tr>
+<tr class="odd">
+<td><code>customerId/memberId</code></td>
+<td>Party Lifecycle/Core system</td>
+<td>Account, user profile, membership mapping</td>
+</tr>
+<tr class="even">
+<td><code>accountId/arrangementId</code></td>
+<td>Current Account/Arrangement API</td>
+<td>Account summary, transaction history</td>
+</tr>
+<tr class="odd">
+<td><code>userId</code></td>
+<td>IAM/User API</td>
+<td>Login and entitlements</td>
+</tr>
+</tbody>
+</table>
+<h2 id="error-handling">7. Error Handling</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Expected Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Duplicate party/customer</td>
+<td>Show existing member/contact support path</td>
+</tr>
+<tr class="even">
+<td>Missing reference data</td>
+<td>Do not submit onboarding; show retry</td>
+</tr>
+<tr class="odd">
+<td>Party creation failed</td>
+<td>Preserve form data and show error</td>
+</tr>
+<tr class="even">
+<td>Account creation failed after party creation</td>
+<td>Mark journey incomplete; support retry/reconciliation</td>
+</tr>
+<tr class="odd">
+<td>Identity creation failed</td>
+<td>Party exists but digital access pending; show actionable
+message</td>
+</tr>
+</tbody>
+</table>
+<h2 id="open-items">8. Open Items</h2>
+<ul>
+<li>Confirm exact order: identity first or party first.</li>
+<li>Confirm whether account creation happens in Backbase, Symitar/core,
+or integration layer.</li>
+<li>Confirm source of membership ID and platform ID/UPID.</li>
+<li>Confirm duplicate detection fields.</li>
+</ul>
+
+</section><section class="doc-section" data-file="journeys/04-account-summary.md">
+<h1 id="account-summary-account-list-journey">04 - Account Summary /
+Account List Journey</h1>
+<h2 id="objective">1. Objective</h2>
+<p>This journey explains how the app displays the list of
+accounts/arrangements for the authenticated user after login.</p>
+<h2 id="high-level-flow">2. High-Level Flow</h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant APP as App
+    participant API as Account/Arrangement API
+    participant CORE as Core/Integration Layer
+
+    APP-&gt;&gt;API: Request account list with Bearer token
+    API-&gt;&gt;CORE: Fetch linked accounts/arrangements
+    CORE--&gt;&gt;API: Return account data
+    API--&gt;&gt;APP: Return account summary
+    APP--&gt;&gt;APP: Render account cards/list</code></pre>
+<h2 id="step-by-step-sequence">3. Step-by-Step Sequence</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Action</th>
+<th>API</th>
+<th>Input</th>
+<th>Output</th>
+<th>Dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>User logs in</td>
+<td>IAM</td>
+<td>Credentials</td>
+<td>Access token</td>
+<td>Login journey</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>User context resolved</td>
+<td>User/Profile API</td>
+<td>Token</td>
+<td>Party/customer ID</td>
+<td>User context journey</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>App calls account list</td>
+<td>Account/Arrangement API</td>
+<td>Token, optional party/customer ID</td>
+<td>Account list</td>
+<td>Token + context</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>App displays accounts</td>
+<td>N/A</td>
+<td>Account list</td>
+<td>UI account cards</td>
+<td>Step 3 success</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-details">4. API Details</h2>
+<h3 id="account-list-arrangement-api">4.1 Account List / Arrangement
+API</h3>
+<p><strong>Method:</strong> <code>GET</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from API reference</code><br />
+<strong>Example placeholder:</strong> <code>/accounts</code> or
+<code>/arrangements</code></p>
+<h4 id="headers">Headers</h4>
+<pre class="http"><code>Authorization: Bearer &lt;access_token&gt;
+Accept: application/json</code></pre>
+<h4 id="query-parameters---placeholder">Query Parameters -
+Placeholder</h4>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>customerId</code></td>
+<td>Conditional</td>
+<td>Required if API does not derive customer from token</td>
+</tr>
+<tr class="even">
+<td><code>productKind</code></td>
+<td>Optional</td>
+<td>Filter account type</td>
+</tr>
+<tr class="odd">
+<td><code>status</code></td>
+<td>Optional</td>
+<td>Active/closed/dormant filter</td>
+</tr>
+</tbody>
+</table>
+<h4 id="success-response---placeholder">Success Response -
+Placeholder</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;accounts&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;accountId&quot;</span><span class="fu">:</span> <span class="st">&quot;acc-001&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;arrangementId&quot;</span><span class="fu">:</span> <span class="st">&quot;arr-001&quot;</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;displayName&quot;</span><span class="fu">:</span> <span class="st">&quot;Everyday Checking&quot;</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;accountNumberMasked&quot;</span><span class="fu">:</span> <span class="st">&quot;****1234&quot;</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;currency&quot;</span><span class="fu">:</span> <span class="st">&quot;USD&quot;</span><span class="fu">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;availableBalance&quot;</span><span class="fu">:</span> <span class="fl">1500.25</span><span class="fu">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;currentBalance&quot;</span><span class="fu">:</span> <span class="fl">1600.25</span><span class="fu">,</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;ACTIVE&quot;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h2 id="dependency-mapping">5. Dependency Mapping</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Data</th>
+<th>Source</th>
+<th>Used For</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Access token</td>
+<td>Login API</td>
+<td>Authorization</td>
+</tr>
+<tr class="even">
+<td>Party/customer ID</td>
+<td>User/Party API</td>
+<td>Account filtering if required</td>
+</tr>
+<tr class="odd">
+<td>Account ID / Arrangement ID</td>
+<td>Account API</td>
+<td>Transaction history, account detail</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ui-behaviour">6. UI Behaviour</h2>
+<ul>
+<li>Show loading while accounts are being fetched.</li>
+<li>Show empty state if no account is linked.</li>
+<li>Mask account number.</li>
+<li>Do not show sensitive data in logs.</li>
+<li>Use account ID/arrangement ID internally for navigation.</li>
+</ul>
+<h2 id="error-handling">7. Error Handling</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>401 Unauthorized</td>
+<td>Redirect to login/session expired</td>
+</tr>
+<tr class="even">
+<td>403 Forbidden</td>
+<td>Show access not allowed</td>
+</tr>
+<tr class="odd">
+<td>No accounts</td>
+<td>Show empty account state</td>
+</tr>
+<tr class="even">
+<td>Core unavailable</td>
+<td>Show retry/service unavailable</td>
+</tr>
+</tbody>
+</table>
+
+</section><section class="doc-section" data-file="journeys/05-transaction-history.md">
+<h1 id="transaction-history-journey">05 - Transaction History
+Journey</h1>
+<h2 id="objective">1. Objective</h2>
+<p>This journey explains how the app displays transaction history for a
+selected account/arrangement.</p>
+<h2 id="high-level-flow">2. High-Level Flow</h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant U as User
+    participant APP as App
+    participant ACC as Account API
+    participant TXN as Transaction API
+
+    U-&gt;&gt;APP: Select account
+    APP-&gt;&gt;TXN: Request transactions using accountId/arrangementId
+    TXN--&gt;&gt;APP: Return transaction list
+    U-&gt;&gt;APP: Select transaction
+    APP-&gt;&gt;TXN: Request transaction detail if required
+    TXN--&gt;&gt;APP: Return transaction detail</code></pre>
+<h2 id="step-by-step-sequence">3. Step-by-Step Sequence</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Action</th>
+<th>API</th>
+<th>Input</th>
+<th>Output</th>
+<th>Dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>User opens account list</td>
+<td>Account API</td>
+<td>Token</td>
+<td>Account list</td>
+<td>Login + account journey</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>User selects account</td>
+<td>N/A</td>
+<td><code>accountId/arrangementId</code></td>
+<td>Transaction screen</td>
+<td>Account selected</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>App calls transaction list</td>
+<td>Transaction API</td>
+<td>Token + account/arrangement ID</td>
+<td>Transaction list</td>
+<td>Step 2</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>User applies filters</td>
+<td>Transaction API</td>
+<td>Date range, type, page</td>
+<td>Filtered list</td>
+<td>Step 3</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>User opens detail</td>
+<td>Transaction Detail API</td>
+<td>Transaction ID</td>
+<td>Transaction detail</td>
+<td>Step 3 output</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-details">4. API Details</h2>
+<h3 id="transaction-list-api">4.1 Transaction List API</h3>
+<p><strong>Method:</strong> <code>GET</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from API reference</code><br />
+<strong>Example placeholder:</strong>
+<code>/accounts/{accountId}/transactions</code> or
+<code>/arrangements/{arrangementId}/transactions</code></p>
+<h4 id="headers">Headers</h4>
+<pre class="http"><code>Authorization: Bearer &lt;access_token&gt;
+Accept: application/json</code></pre>
+<h4 id="path-parameters">Path Parameters</h4>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>accountId</code> or <code>arrangementId</code></td>
+<td>Yes</td>
+<td>Selected account/arrangement identifier</td>
+</tr>
+</tbody>
+</table>
+<h4 id="query-parameters---placeholder">Query Parameters -
+Placeholder</h4>
+<table>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>fromDate</code></td>
+<td>Start date</td>
+</tr>
+<tr class="even">
+<td><code>toDate</code></td>
+<td>End date</td>
+</tr>
+<tr class="odd">
+<td><code>transactionType</code></td>
+<td>Debit/Credit/filter type</td>
+</tr>
+<tr class="even">
+<td><code>page</code></td>
+<td>Pagination page</td>
+</tr>
+<tr class="odd">
+<td><code>size</code></td>
+<td>Page size</td>
+</tr>
+</tbody>
+</table>
+<h4 id="success-response---placeholder">Success Response -
+Placeholder</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;transactions&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;transactionId&quot;</span><span class="fu">:</span> <span class="st">&quot;txn-001&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;bookingDate&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-07-01&quot;</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;description&quot;</span><span class="fu">:</span> <span class="st">&quot;POS Purchase&quot;</span><span class="fu">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;amount&quot;</span><span class="fu">:</span> <span class="fl">-25.50</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;currency&quot;</span><span class="fu">:</span> <span class="st">&quot;USD&quot;</span><span class="fu">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;DEBIT&quot;</span><span class="fu">,</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;POSTED&quot;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;page&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;size&quot;</span><span class="fu">:</span> <span class="dv">20</span><span class="fu">,</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;totalElements&quot;</span><span class="fu">:</span> <span class="dv">1</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="transaction-detail-api">4.2 Transaction Detail API</h3>
+<p><strong>Method:</strong> <code>GET</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from API reference</code></p>
+<p><strong>Dependency:</strong> Requires <code>transactionId</code> from
+transaction list API.</p>
+<h2 id="dependency-mapping">5. Dependency Mapping</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Data</th>
+<th>Source</th>
+<th>Used For</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Access token</td>
+<td>Login API</td>
+<td>Authorization</td>
+</tr>
+<tr class="even">
+<td>Account ID / Arrangement ID</td>
+<td>Account List API</td>
+<td>Transaction lookup</td>
+</tr>
+<tr class="odd">
+<td>Transaction ID</td>
+<td>Transaction List API</td>
+<td>Transaction detail</td>
+</tr>
+</tbody>
+</table>
+<h2 id="error-handling">6. Error Handling</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No transactions</td>
+<td>Show empty state</td>
+</tr>
+<tr class="even">
+<td>Invalid account ID</td>
+<td>Navigate back / show data unavailable</td>
+</tr>
+<tr class="odd">
+<td>Unauthorized account access</td>
+<td>Show forbidden/access denied</td>
+</tr>
+<tr class="even">
+<td>Pagination failure</td>
+<td>Keep current list and show retry</td>
+</tr>
+</tbody>
+</table>
+
+</section><section class="doc-section" data-file="journeys/06-logout-session-termination.md">
+<h1 id="logout-session-termination-journey">06 - Logout &amp; Session
+Termination Journey</h1>
+<h2 id="objective">1. Objective</h2>
+<p>This journey explains how the application terminates the user session
+securely and removes local authentication/session data.</p>
+<h2 id="high-level-flow">2. High-Level Flow</h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant U as User
+    participant APP as App
+    participant IAM as Backbase IAM
+
+    U-&gt;&gt;APP: Tap Logout
+    APP-&gt;&gt;IAM: Call logout/revoke token API
+    IAM--&gt;&gt;APP: Session/token invalidated
+    APP-&gt;&gt;APP: Clear token and local session data
+    APP--&gt;&gt;U: Navigate to login screen</code></pre>
+<h2 id="step-by-step-sequence">3. Step-by-Step Sequence</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Action</th>
+<th>API</th>
+<th>Input</th>
+<th>Output</th>
+<th>Dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>User taps Logout</td>
+<td>N/A</td>
+<td>User action</td>
+<td>Logout confirmation optional</td>
+<td>Active session</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>App calls logout/revoke API</td>
+<td>IAM Logout API</td>
+<td>Access token/refresh token</td>
+<td>Session invalidated</td>
+<td>Valid token</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>App clears local data</td>
+<td>N/A</td>
+<td>Stored token/session</td>
+<td>Local auth cleared</td>
+<td>Step 2 or fallback</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>App redirects</td>
+<td>N/A</td>
+<td>Cleared state</td>
+<td>Login screen</td>
+<td>Step 3</td>
+</tr>
+</tbody>
+</table>
+<h2 id="api-details">4. API Details</h2>
+<h3 id="logout-token-revocation-api">4.1 Logout / Token Revocation
+API</h3>
+<p><strong>Method:</strong> <code>POST</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from Backbase IAM API reference</code></p>
+<h4 id="headers">Headers</h4>
+<pre class="http"><code>Authorization: Bearer &lt;access_token&gt;
+Content-Type: application/json</code></pre>
+<h4 id="request-body---placeholder">Request Body - Placeholder</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;refresh_token&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;refresh_token&gt;&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="success-response---placeholder">Success Response -
+Placeholder</h4>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;SUCCESS&quot;</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Session terminated&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h2 id="important-behaviour">5. Important Behaviour</h2>
+<ul>
+<li>Local token/session data must be cleared even if logout API fails
+due to network issue.</li>
+<li>User must not remain inside the app after logout action.</li>
+<li>Cached sensitive data should be cleared or invalidated.</li>
+<li>Biometric/session shortcuts should be reset based on security
+rules.</li>
+</ul>
+<h2 id="error-handling">6. Error Handling</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Logout API success</td>
+<td>Clear local session and redirect</td>
+</tr>
+<tr class="even">
+<td>Logout API timeout</td>
+<td>Clear local session and redirect; optional background retry</td>
+</tr>
+<tr class="odd">
+<td>Token already expired</td>
+<td>Clear local session and redirect</td>
+</tr>
+<tr class="even">
+<td>Server error</td>
+<td>Clear local session; do not keep user logged in</td>
+</tr>
+</tbody>
+</table>
+
+</section><section class="doc-section" data-file="reference/api-catalog.md">
+<h1 id="api-catalogue-dependency-mapping">API Catalogue &amp; Dependency
+Mapping</h1>
+<h2 id="catalogue-summary">1. Catalogue Summary</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>API/Service</th>
+<th>Purpose</th>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Depends On</th>
+<th>Provides</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>IAM Login/Auth API</td>
+<td>Authenticate user</td>
+<td>POST</td>
+<td>To be confirmed</td>
+<td>Username/password/client config</td>
+<td>Access token, refresh token</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>User Profile/Context API</td>
+<td>Get logged-in user context</td>
+<td>GET</td>
+<td>To be confirmed</td>
+<td>Access token</td>
+<td>User ID, party/customer ID</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Entitlements API</td>
+<td>Get permissions/features</td>
+<td>GET</td>
+<td>To be confirmed</td>
+<td>Access token, user ID</td>
+<td>Roles/permissions</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Party Reference Data API</td>
+<td>Load onboarding dropdown/reference data</td>
+<td>GET</td>
+<td>To be confirmed</td>
+<td>Environment/token as applicable</td>
+<td>Reference data</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Party Lifecycle API</td>
+<td>Create/update party/customer</td>
+<td>POST/PUT</td>
+<td>To be confirmed</td>
+<td>Valid onboarding data</td>
+<td>Party ID/customer ID</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Current Account/Arrangement API</td>
+<td>Create/link account</td>
+<td>POST/GET</td>
+<td>To be confirmed</td>
+<td>Party/customer ID</td>
+<td>Account/arrangement ID</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Account List API</td>
+<td>Fetch user accounts</td>
+<td>GET</td>
+<td>To be confirmed</td>
+<td>Access token, optional customer ID</td>
+<td>Account list</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Transaction List API</td>
+<td>Fetch account transactions</td>
+<td>GET</td>
+<td>To be confirmed</td>
+<td>Access token + account/arrangement ID</td>
+<td>Transactions</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Transaction Detail API</td>
+<td>Fetch transaction detail</td>
+<td>GET</td>
+<td>To be confirmed</td>
+<td>Transaction ID</td>
+<td>Transaction details</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Logout/Revoke API</td>
+<td>End session</td>
+<td>POST</td>
+<td>To be confirmed</td>
+<td>Access/refresh token</td>
+<td>Session terminated</td>
+</tr>
+</tbody>
+</table>
+<h2 id="end-to-end-dependency-chain">2. End-to-End Dependency Chain</h2>
+<pre class="text"><code>Login API
+  -&gt; access_token / refresh_token
+      -&gt; User Profile API
+          -&gt; userId / partyId / customerId
+              -&gt; Entitlements API
+              -&gt; Account List API
+                  -&gt; accountId / arrangementId
+                      -&gt; Transaction List API
+                          -&gt; transactionId
+                              -&gt; Transaction Detail API</code></pre>
+<h2 id="onboarding-dependency-chain">3. Onboarding Dependency Chain</h2>
+<pre class="text"><code>Party Reference Data API
+  -&gt; reference values for form validation
+      -&gt; Party Lifecycle API
+          -&gt; partyId / customerId / membershipId
+              -&gt; Current Account / Arrangement API
+                  -&gt; accountId / arrangementId
+                      -&gt; IAM user linking / entitlement assignment</code></pre>
+<h2 id="common-headers">4. Common Headers</h2>
+<pre class="http"><code>Accept: application/json
+Content-Type: application/json
+Authorization: Bearer &lt;access_token&gt;</code></pre>
+<h2 id="common-response-data-that-must-be-preserved">5. Common Response
+Data That Must Be Preserved</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Why Important</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>access_token</code></td>
+<td>Required for secured API calls</td>
+</tr>
+<tr class="even">
+<td><code>refresh_token</code></td>
+<td>Required for refresh/revoke if enabled</td>
+</tr>
+<tr class="odd">
+<td><code>expires_in</code></td>
+<td>Used for expiry handling</td>
+</tr>
+<tr class="even">
+<td><code>userId</code></td>
+<td>User-specific operations/audit</td>
+</tr>
+<tr class="odd">
+<td><code>partyId/customerId</code></td>
+<td>Customer/party mapping</td>
+</tr>
+<tr class="even">
+<td><code>accountId/arrangementId</code></td>
+<td>Account and transaction journeys</td>
+</tr>
+<tr class="odd">
+<td><code>transactionId</code></td>
+<td>Transaction details/dispute/future journeys</td>
+</tr>
+</tbody>
+</table>
+<h2 id="confirmation-checklist-against-api-reference-html">6.
+Confirmation Checklist Against API Reference HTML</h2>
+<ul class="task-list">
+<li><label><input type="checkbox" />Confirm exact endpoint
+paths.</label></li>
+<li><label><input type="checkbox" />Confirm HTTP methods.</label></li>
+<li><label><input type="checkbox" />Confirm authentication
+scheme.</label></li>
+<li><label><input type="checkbox" />Confirm required
+headers.</label></li>
+<li><label><input type="checkbox" />Confirm request body
+schema.</label></li>
+<li><label><input type="checkbox" />Confirm response body
+schema.</label></li>
+<li><label><input type="checkbox" />Confirm error response
+format.</label></li>
+<li><label><input type="checkbox" />Confirm pagination
+model.</label></li>
+<li><label><input type="checkbox" />Confirm token refresh
+mechanism.</label></li>
+<li><label><input type="checkbox" />Confirm service/domain
+names.</label></li>
+</ul>
+<h2 id="symitar-mapping-summary">7. Symitar Mapping Summary</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Backbase Object / Concept</th>
+<th>Symitar Source / Concept</th>
+<th>Purpose</th>
+<th>Notes / Dependency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Legal Entity</td>
+<td>Member record</td>
+<td>Represents the credit union member/customer in Backbase.</td>
+<td>Must be created before service agreement, users, arrangements, and
+entitlements.</td>
+</tr>
+<tr class="even">
+<td>User</td>
+<td>Online banking user / member identity</td>
+<td>Represents the login identity mapped to the member.</td>
+<td>Linked with IAM and service agreement context.</td>
+</tr>
+<tr class="odd">
+<td>Service Agreement</td>
+<td>Member access scope / digital banking relationship</td>
+<td>Defines what the user can access and transact on.</td>
+<td>Required for entitlement checks and context selection.</td>
+</tr>
+<tr class="even">
+<td>Arrangement</td>
+<td>Share / Loan / Certificate account</td>
+<td>Represents account product summary and balances in Backbase.</td>
+<td>Used by dashboard, transaction history, and payment journeys.</td>
+</tr>
+<tr class="odd">
+<td>Arrangement <code>externalId</code></td>
+<td>Symitar Share ID / Loan ID / Certificate ID</td>
+<td>Links Backbase account representation to the core ledger
+account.</td>
+<td>Must be preserved for core calls and reconciliation.</td>
+</tr>
+<tr class="even">
+<td>Transaction</td>
+<td>Share/loan transaction history</td>
+<td>Shows posted/pending account activity.</td>
+<td>Freshness depends on transaction sync/cursor job.</td>
+</tr>
+<tr class="odd">
+<td>Payment Order</td>
+<td>Transfer / ACH / payment instruction</td>
+<td>Initiates funds movement request from digital channel.</td>
+<td>Symitar remains final execution/system of record.</td>
+</tr>
+<tr class="even">
+<td>Entitlement / Function Group</td>
+<td>Digital banking role/permission</td>
+<td>Controls account access, transfer/payment creation, approvals, and
+limits.</td>
+<td>Must be enforced server-side through Access Control.</td>
+</tr>
+<tr class="odd">
+<td>Limit</td>
+<td>Payment/transfer limit</td>
+<td>Controls transactional/daily thresholds and approval flow.</td>
+<td>Required for high-value transfers and ACH/payment approval
+rules.</td>
+</tr>
+<tr class="even">
+<td>Notification</td>
+<td>Alert/event from digital banking or payment lifecycle</td>
+<td>Sends confirmation or status update to user.</td>
+<td>Trigger depends on payment/account event completion.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="endpoint-confirmation-required">8. Endpoint Confirmation
+Required</h2>
+<p>The following endpoint shapes are useful for design discussion but
+must be validated from the target environment’s OpenAPI/API reference
+before implementation:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Area</th>
+<th>Illustrative Endpoint Shape</th>
+<th>Confirmation Needed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Arrangement Manager</td>
+<td><code>GET /api/arrangement-manager/client-api/v2/arrangements</code></td>
+<td>Confirm gateway route, version, query parameters, and response
+schema.</td>
+</tr>
+<tr class="even">
+<td>Transaction Manager</td>
+<td><code>GET /api/transaction-manager/client-api/v2/transactions</code></td>
+<td>Confirm exact endpoint, pagination, filters, account identifier
+name, and service-agreement/user headers.</td>
+</tr>
+<tr class="odd">
+<td>Payment Order Service</td>
+<td><code>POST /api/payment-order-service/client-api/v2/payment-orders</code></td>
+<td>Confirm payment type values, body schema, lifecycle states, and
+approval handling.</td>
+</tr>
+<tr class="even">
+<td>IAM / Keycloak</td>
+<td><code>/{auth-prefix}/realms/{realm}/protocol/openid-connect/*</code></td>
+<td>Confirm auth prefix, realm, client IDs, redirect URI,
+refresh/revoke/logout behaviour.</td>
+</tr>
+<tr class="odd">
+<td>Access Control</td>
+<td>Permissions / entitlement endpoint</td>
+<td>Confirm function names, privileges, service agreement requirements,
+and limit configuration.</td>
+</tr>
+</tbody>
+</table>
+
+</section><section class="doc-section" data-file="reference/error-handling.md">
+<h1 id="error-handling-reference">Error Handling Reference</h1>
+<h2 id="common-api-error-handling">1. Common API Error Handling</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Status/Scenario</th>
+<th>Meaning</th>
+<th>App Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>400 Bad Request</td>
+<td>Invalid request payload</td>
+<td>Show validation message; do not retry automatically</td>
+</tr>
+<tr class="even">
+<td>401 Unauthorized</td>
+<td>Token missing/expired/invalid</td>
+<td>Attempt refresh if enabled; otherwise logout</td>
+</tr>
+<tr class="odd">
+<td>403 Forbidden</td>
+<td>User not allowed</td>
+<td>Show access denied; hide restricted feature</td>
+</tr>
+<tr class="even">
+<td>404 Not Found</td>
+<td>Resource unavailable</td>
+<td>Show data not found/empty state</td>
+</tr>
+<tr class="odd">
+<td>408 Timeout</td>
+<td>Network timeout</td>
+<td>Show retry option</td>
+</tr>
+<tr class="even">
+<td>409 Conflict</td>
+<td>Duplicate/conflicting data</td>
+<td>Show conflict message and guidance</td>
+</tr>
+<tr class="odd">
+<td>423 Locked</td>
+<td>Account locked</td>
+<td>Show locked account support message</td>
+</tr>
+<tr class="even">
+<td>429 Too Many Requests</td>
+<td>Rate limit</td>
+<td>Ask user to wait/retry later</td>
+</tr>
+<tr class="odd">
+<td>500 Server Error</td>
+<td>Backend failure</td>
+<td>Show generic error and retry</td>
+</tr>
+<tr class="even">
+<td>503 Unavailable</td>
+<td>Service unavailable</td>
+<td>Show maintenance/unavailable message</td>
+</tr>
+</tbody>
+</table>
+<h2 id="login-specific-errors">2. Login-Specific Errors</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Wrong username/password</td>
+<td>Show invalid login details</td>
+</tr>
+<tr class="even">
+<td>Password expired</td>
+<td>Redirect to password reset/change flow if available</td>
+</tr>
+<tr class="odd">
+<td>Account locked</td>
+<td>Show account locked message</td>
+</tr>
+<tr class="even">
+<td>MFA required</td>
+<td>Navigate to MFA screen</td>
+</tr>
+<tr class="odd">
+<td>IAM unavailable</td>
+<td>Show service unavailable/retry</td>
+</tr>
+</tbody>
+</table>
+<h2 id="accounttransaction-errors">3. Account/Transaction Errors</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No account linked</td>
+<td>Show empty state and contact/support guidance</td>
+</tr>
+<tr class="even">
+<td>Account access forbidden</td>
+<td>Show access denied</td>
+</tr>
+<tr class="odd">
+<td>Transaction list empty</td>
+<td>Show no transactions message</td>
+</tr>
+<tr class="even">
+<td>Invalid account/arrangement ID</td>
+<td>Navigate back and refresh account list</td>
+</tr>
+</tbody>
+</table>
+<h2 id="standard-error-object---placeholder">4. Standard Error Object -
+Placeholder</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;errorCode&quot;</span><span class="fu">:</span> <span class="st">&quot;INVALID_CREDENTIALS&quot;</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;message&quot;</span><span class="fu">:</span> <span class="st">&quot;Invalid username or password&quot;</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;traceId&quot;</span><span class="fu">:</span> <span class="st">&quot;trace-123&quot;</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;timestamp&quot;</span><span class="fu">:</span> <span class="st">&quot;2026-07-03T10:00:00Z&quot;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h2 id="implementation-notes">5. Implementation Notes</h2>
+<ul>
+<li>Do not expose raw technical server messages to end users.</li>
+<li>Log <code>traceId</code> for debugging, not sensitive fields.</li>
+<li>Use consistent error mapping across app/web.</li>
+<li>For 401, avoid infinite refresh loops.</li>
+</ul>
+
+</section><section class="doc-section" data-file="reference/token-session-management.md">
+<h1 id="token-session-management-reference">Token &amp; Session
+Management Reference</h1>
+<h2 id="token-lifecycle">1. Token Lifecycle</h2>
+<pre class="text"><code>User Login
+  -&gt; IAM validates credentials
+    -&gt; Access token issued
+      -&gt; App uses token in Authorization header
+        -&gt; Token expires
+          -&gt; Refresh token flow if supported
+            -&gt; New access token
+          -&gt; Otherwise redirect to login</code></pre>
+<h2 id="storage-recommendations">2. Storage Recommendations</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Recommended Storage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Android</td>
+<td>Keystore / Encrypted Shared Preferences</td>
+</tr>
+<tr class="even">
+<td>iOS</td>
+<td>Keychain</td>
+</tr>
+<tr class="odd">
+<td>Web</td>
+<td>Secure HTTP-only cookies where possible; avoid unsafe local storage
+for sensitive tokens</td>
+</tr>
+</tbody>
+</table>
+<h2 id="rules">3. Rules</h2>
+<ul>
+<li>Never store password.</li>
+<li>Never print tokens in logs.</li>
+<li>Clear token on logout.</li>
+<li>Clear token on unrecoverable 401.</li>
+<li>Refresh token only once per expiry event to avoid duplicate
+calls.</li>
+<li>Do not call protected APIs without a valid token.</li>
+</ul>
+<h2 id="api-header">4. API Header</h2>
+<pre class="http"><code>Authorization: Bearer &lt;access_token&gt;</code></pre>
+<h2 id="refresh-flow---if-supported">5. Refresh Flow - If Supported</h2>
+<p><strong>Method:</strong> <code>POST</code><br />
+<strong>Endpoint:</strong>
+<code>To be confirmed from IAM API reference</code></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;grant_type&quot;</span><span class="fu">:</span> <span class="st">&quot;refresh_token&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;refresh_token&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;refresh_token&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;client_id&quot;</span><span class="fu">:</span> <span class="st">&quot;mobile-app-client&quot;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h2 id="session-expiry-ui">6. Session Expiry UI</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>UI Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Access token expired, refresh success</td>
+<td>Continue silently</td>
+</tr>
+<tr class="even">
+<td>Access token expired, refresh failed</td>
+<td>Show session expired and redirect to login</td>
+</tr>
+<tr class="odd">
+<td>Refresh token expired</td>
+<td>Redirect to login</td>
+</tr>
+<tr class="even">
+<td>Logout clicked</td>
+<td>Clear session and redirect immediately</td>
+</tr>
+</tbody>
+</table>
+<h2 id="mobile-implementation-notes">6. Mobile Implementation Notes</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Note</th>
+<th>Implementation Guidance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Use PKCE authorization code flow for mobile apps.</td>
+<td>Do not use password grant for native/mobile clients unless
+explicitly approved by architecture/security.</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Do not store credentials in plain text.</td>
+<td>Store only tokens/session metadata using platform-secure
+storage.</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Android token storage</td>
+<td>Use EncryptedSharedPreferences or Keystore-backed secure
+storage.</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>iOS token storage</td>
+<td>Use Keychain with an appropriate accessibility setting.</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Token refresh</td>
+<td>Refresh before expiry where possible; on 401, attempt refresh once
+before forcing logout.</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Redirect URI / deep link</td>
+<td>Confirm final redirect scheme for each platform, for example
+client-specific <code>app://callback</code>.</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Certificate pinning</td>
+<td>Enable only after final production certificates/domains are
+confirmed; maintain rotation strategy.</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Logout</td>
+<td>Clear local token/session data after server-side revoke/logout
+completes or when refresh fails.</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Session context</td>
+<td>If multiple service agreements are available, mobile must handle
+context selection before protected journeys.</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Infinite-loop prevention</td>
+<td>Avoid repeated refresh attempts when IAM returns invalid_grant or
+refresh token expiry.</td>
+</tr>
+</tbody>
+</table>
+
+</section><section class="doc-section" data-file="reference/open-items.md">
+<h1 id="open-items-confirmation-required">Open Items / Confirmation
+Required</h1>
+<p>This document lists the implementation-level items that must be
+confirmed against the live Backbase API reference/OpenAPI specification,
+target environment configuration, and Symitar integration design before
+final development sign-off.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Item</th>
+<th>Why Required</th>
+<th>Owner/Source</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Exact IAM auth prefix and realm values</td>
+<td>Required for login, token refresh, revoke, and logout</td>
+<td>IAM / Environment config</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Final OAuth client IDs for Web, iOS, and Android</td>
+<td>Required for PKCE/OIDC client setup</td>
+<td>IAM / Security team</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Final redirect URI / deep-link scheme for each platform</td>
+<td>Required for mobile and web callback handling</td>
+<td>Mobile/Web + IAM team</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Exact token endpoint, refresh endpoint, revoke/logout behaviour</td>
+<td>Required for session lifecycle and security</td>
+<td>IAM guide / API reference</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>MFA / OTP / step-up authentication requirement</td>
+<td>Impacts login, high-risk payment, and transfer journeys</td>
+<td>Security / Backbase team</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Exact user profile/context endpoint</td>
+<td>Required to resolve user, service agreement, party/customer
+mapping</td>
+<td>API reference/OpenAPI</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Source of partyId/customerId/memberId/UPID</td>
+<td>Required for domain mapping and downstream API calls</td>
+<td>Backbase/Symitar mapping</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Party Lifecycle API request/response payloads</td>
+<td>Required for onboarding/member provisioning</td>
+<td>API reference/OpenAPI</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Party Reference Data API list and enum values</td>
+<td>Required for onboarding forms and validation</td>
+<td>API reference/OpenAPI</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Current Account / Arrangement API exact endpoints</td>
+<td>Required for account dashboard and account linking</td>
+<td>API reference/OpenAPI</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>Arrangement response schema and account identifier field names</td>
+<td>Required by account dashboard, transaction, and payment
+journeys</td>
+<td>API reference/OpenAPI</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>Transaction API endpoint, pagination, filters, and sorting</td>
+<td>Required for transaction screen implementation</td>
+<td>API reference/OpenAPI</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>Transaction sync schedule and acceptable freshness window</td>
+<td>Required to explain online transaction visibility vs core
+posting</td>
+<td>Stream/Symitar team</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>Payment Order Service endpoint and payload schema</td>
+<td>Required for internal transfer and ACH payment journeys</td>
+<td>API reference/OpenAPI</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>Payment lifecycle states and approval flow</td>
+<td>Required for UI status, confirmation, retry, and notification
+handling</td>
+<td>Payments/Access Control team</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td>Entitlement function names and privilege values</td>
+<td>Required for server-side Access Control checks</td>
+<td>Access Control config</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>17</td>
+<td>Daily and transactional limits by job role/member type</td>
+<td>Required for transfer/payment validation and approval routing</td>
+<td>Business + Access Control</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>18</td>
+<td>Symitar connector availability for member lookup</td>
+<td>Required for onboarding and user/member mapping</td>
+<td>Symitar integration team</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>19</td>
+<td>Symitar connector availability for share/loan/certificate account
+list</td>
+<td>Required for account dashboard and arrangement ingestion</td>
+<td>Symitar integration team</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>20</td>
+<td>Symitar connector availability for transaction history</td>
+<td>Required for Stream transaction ingestion</td>
+<td>Symitar integration team</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>21</td>
+<td>Symitar connector availability for internal transfer and ACH</td>
+<td>Required for payment execution</td>
+<td>Symitar integration team</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>22</td>
+<td>Notification channels after transfer/payment</td>
+<td>Required for confirmation SMS/email/push/in-app notifications</td>
+<td>Notification/business team</td>
+<td>Open</td>
+</tr>
+<tr class="odd">
+<td>23</td>
+<td>Error response format across services</td>
+<td>Required for common UI error handling</td>
+<td>API reference/OpenAPI</td>
+<td>Open</td>
+</tr>
+<tr class="even">
+<td>24</td>
+<td>Production certificate/domain details for certificate pinning</td>
+<td>Required for mobile security implementation</td>
+<td>Infrastructure/security team</td>
+<td>Open</td>
+</tr>
+</tbody>
+</table>
+<h2 id="finalisation-rule">Finalisation Rule</h2>
+<p>The document can be shared as a consolidated technical reference now.
+For implementation baseline/sign-off, close or explicitly defer the open
+items above and replace all illustrative endpoint paths and sample
+payloads with target-environment values.</p>
+
+</section><section class="doc-section" data-file="reference/implementation-readiness-addendum.md">
+<h1 id="implementation-readiness-addendum">Implementation Readiness
+Addendum</h1>
+<h2 id="current-status">Current Status</h2>
+<p>The documentation is complete from a journey, sequence, dependency,
+security, and error-handling perspective. It is ready for internal
+review and technical walkthrough.</p>
+<p>It is not yet a final implementation baseline until
+environment-specific API details are confirmed from the live Backbase
+OpenAPI/API reference and Symitar connector design.</p>
+<h2 id="pending-before-final-sign-off">Pending Before Final
+Sign-Off</h2>
+<ol type="1">
+<li>Confirm exact API gateway routes for Arrangement Manager,
+Transaction Manager, Payment Order Service, Access Control, and
+IAM.</li>
+<li>Confirm auth-prefix, realm, OAuth client IDs, redirect URIs, and
+logout/revoke behaviour.</li>
+<li>Replace all illustrative request/response payloads with exact API
+reference schemas.</li>
+<li>Confirm Symitar connector coverage for member, account, transaction,
+transfer, and ACH use cases.</li>
+<li>Confirm transaction ingestion schedule and acceptable freshness
+window.</li>
+<li>Confirm entitlement function names, privilege values, limits, and
+approval rules.</li>
+<li>Confirm MFA/step-up authentication rules for high-risk
+transfers/payments.</li>
+<li>Confirm notification channels and event triggers.</li>
+</ol>
+<h2 id="suggested-review-message">Suggested Review Message</h2>
+<p>Hi Anirban,</p>
+<p>The documentation is complete from a journey, sequence, dependency,
+security, and error-handling perspective. A few implementation-level
+items are still marked for confirmation, mainly the exact API gateway
+routes, environment-specific auth prefix/realm, final request/response
+payloads from the live OpenAPI specification, and Symitar connector
+mappings.</p>
+<p>I have kept those items clearly marked as illustrative / pending
+confirmation so the team can review and replace them once the
+environment-specific API reference is available.</p>
+
+</section></main></div></body></html>
